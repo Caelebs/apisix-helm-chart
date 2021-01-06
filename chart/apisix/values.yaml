@@ -1,27 +1,9 @@
-#
-# Licensed to the Apache Software Foundation (ASF) under one or more
-# contributor license agreements.  See the NOTICE file distributed with
-# this work for additional information regarding copyright ownership.
-# The ASF licenses this file to You under the Apache License, Version 2.0
-# (the "License"); you may not use this file except in compliance with
-# the License.  You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
 replicaCount: 1
 image:
-  repository: apache/apisix
+  repository: caelebs/apisix
   pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: 2.1-alpine
-
-
+  tag: 2.1-1218
+  
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
@@ -69,20 +51,15 @@ gateway:
   #    hosts:
   #      - chart-example.local
 
-# etcd configuration
-# use the FQDN address or the IP of the etcd
 etcd:
-  # install etcd(v3) by default, set false if do not want to install etcd(v3) together
   enabled: true
-  host: etcd.host # host or ip e.g.172.20.128.89
+  host: etcd.host
   prefix: "/apisix"
   timeout: 30
   port: 2379
   auth:
     rbac:
-      # No authentication by default
       enabled: false
-
 dns:
   resolvers:
     - 127.0.0.1
@@ -91,25 +68,19 @@ dns:
     - 223.5.5.5
     - 1.1.1.1
     - 8.8.8.8
+    - 10.20.0.0
   validity: 30
   timeout: 5
-
 admin:
-  # Enable Admin API
   enabled: true
-  # Admin API support CORS response headers
   cors: true
-  # Admin API credentials
   credentials:
     admin: edd1c9f034335f136f87ad84b625c8f1
     viewer: 4054f7cf07e344346cd3f287985e76a2
-
 allow:
-  # The ip range for allowing access to Apache APISIX
   ipList:
     - 127.0.0.1/24
-
-# APISIX plugins to be enabled
+    - 10.0.0.0/24
 plugins:
   - api-breaker
   - authz-keycloak
@@ -149,6 +120,8 @@ plugins:
   - uri-blocker
   - wolf-rbac
   - zipkin
+  - auth-aams
+  - test-plugin
 stream_plugins:
   - mqtt-proxy
 
@@ -175,9 +148,10 @@ autoscaling:
   targetCPUUtilizationPercentage: 80
   targetMemoryUtilizationPercentage: 80
 
-nodeSelector: {}
+nodeSelector: {
+  node: 'node04'
+  }
 
 tolerations: []
 
 affinity: {}
-

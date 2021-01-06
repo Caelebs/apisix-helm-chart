@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: apisix-dashboard-conf
+  namespace: {{ .Release.Namespace }}
+data:
+  conf.yaml: |-
+    conf:
+      listen:
+        host: 0.0.0.0
+        port: {{ .Values.service.port }}
+      etcd:
+      {{- if .Values.etcd.enabled }}
+        endpoints:                                 # it's possible to define multiple etcd hosts addresses of the same etcd cluster.
+          - "http://{{ .Release.Name }}-etcd.{{ .Release.Namespace }}.svc.{{ .Values.gateway.k8s_domain }}:{{ .Values.etcd.port }}"
+      {{- else }}
+        endpoints:                                 # it's possible to define multiple etcd hosts addresses of the same etcd cluster.
+          - "http://{{ .Values.etcd.host }}:{{ .Values.etcd.port }}"         # multiple etcd address
+      {{- end }}
+        timeout: {{ .Values.etcd.timeout }}   # 30 seconds
+      log:
+        error_log:
+          level: warn
+          file_path:
+            logs/error.log
+        access_log:
+          file_path:
+            logs/access.log
+    authentication:
+      secret:
+        secret
+      expire_time: 3600000
+      users:
+        - username: admin
+          password: admin
+        - username: user
+          password: user

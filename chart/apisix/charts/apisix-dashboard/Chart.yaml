@@ -1,0 +1,10 @@
+apiVersion: v1
+appVersion: "2.2"
+description: APISIX Dashboard is designed to make it as easy as possible for users to operate Apache APISIX through a frontend interface.
+name: apisix-dashboard
+version: 0.1.1
+maintainers:
+  - email: guangxilaobiao@pinnettech.cn
+    name: WANGSHOUYISHISANXIANG
+home: https://github.com/apache/apisix-dashboard
+icon: https://apisix.apache.org/img/logo.png
